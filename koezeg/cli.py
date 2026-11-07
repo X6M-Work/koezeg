@@ -1,9 +1,10 @@
 """The command line interface: reads the options and prints the cow."""
 
 import argparse
+import sys
 
 from koezeg.bubble import make_bubble
-from koezeg.cowfile import DEFAULT_COW, random_cow, render_cow
+from koezeg.cowfile import DEFAULT_COW, list_cows, random_cow, render_cow
 from koezeg.modes import DEFAULT_MODE, MODES
 
 from rich.console import Console
@@ -64,6 +65,13 @@ def main():
         cow = random_cow()
     else:
         cow = args.cow
+
+    available_cows = list_cows()
+    if cow not in available_cows:
+        console = Console()
+        console.print(f"Onbekende koe: {cow}")
+        console.print(f"Beschikbare koeien: {', '.join(available_cows)}")
+        sys.exit(1)
 
     # args.mode is None when no mode flag was given.
     mode = MODES.get(args.mode, DEFAULT_MODE)
